@@ -1,0 +1,45 @@
+<?php
+
+namespace Beyou\Catalog\Domain\Model;
+
+use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+class Channel extends Model
+{
+    use HasFactory;
+
+    /**
+     * Os atributos que podem ser atribuídos em massa (mass assignable).
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'name',
+        'slug',
+        'description',
+        'avatar_image_path',
+        'cover_image_path',
+        'settings',
+    ];
+
+    /**
+     * Os atributos que devem ser convertidos para tipos nativos (casting).
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'verified_at' => 'datetime',
+        'settings' => 'array',
+    ];
+
+    /**
+     * Obtém o usuário (dono) ao qual o canal pertence.
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+}
