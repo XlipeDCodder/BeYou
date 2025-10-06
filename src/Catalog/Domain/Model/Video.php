@@ -14,6 +14,33 @@ class Video extends Model
     use HasFactory, HasUuids;
 
     /**
+     * Indicates if the model's ID is auto-incrementing.
+     *
+     * @var bool
+     */
+    public $incrementing = true; // <-- ADICIONE ESTA LINHA
+
+    /**
+     * Get the data type for the model's primary key.
+     *
+     * @return string
+     */
+    public function getKeyType(): string 
+    {
+        return 'int';
+    }
+
+    /**
+     * Get the columns that should receive a unique identifier.
+     *
+     * @return array
+     */
+    public function uniqueIds(): array 
+    {
+        return ['uuid'];
+    }
+
+    /**
      * Os atributos que podem ser atribuídos em massa.
      */
     protected $fillable = [
