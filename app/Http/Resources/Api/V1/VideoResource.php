@@ -13,24 +13,30 @@ class VideoResource extends JsonResource
      *
      * @return array<string, mixed>
      */
-    public function toArray(Request $request): array
-    {
-        return [
-            'id' => $this->uuid,
-            'title' => $this->title,
-            'description' => $this->description, 
-            'stream_url' => $this->stream_file_path 
-                            ? Storage::disk('public')->url($this->stream_file_path)
+public function toArray(Request $request): array
+{
+    return [
+        'id' => $this->uuid,
+        'title' => $this->title,
+        'description' => $this->description,
+        'stream_url' => $this->stream_file_path
+                        ? Storage::disk('public')->url($this->stream_file_path)
+                        : null,
+        'thumbnail_url' => $this->thumbnail_path
+                            ? Storage::disk('public')->url($this->thumbnail_path)
                             : null,
-            'thumbnail_url' => $this->thumbnail_path
-                                ? Storage::disk('public')->url($this->thumbnail_path)
-                                : null,
-            'duration_in_seconds' => $this->duration_in_seconds,
-            'published_at' => $this->published_at,
-            'channel' => [
-                'name' => $this->channel->name,
-                'slug' => $this->channel->slug,
-            ],
-        ];
-    }
+        'duration_in_seconds' => $this->duration_in_seconds,
+        'published_at' => $this->published_at,
+        'channel' => [
+            'name' => $this->channel->name,
+            'slug' => $this->channel->slug,
+        ],
+        // --- NOVOS CAMPOS ---
+        'stats' => [
+            'likes_count' => $this->likes_count ?? 0,
+            'dislikes_count' => $this->dislikes_count ?? 0,
+        ],
+        
+    ];
+}
 }

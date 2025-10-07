@@ -13,16 +13,17 @@ class ListVideoController extends Controller
 {
     public function __invoke(Request $request): AnonymousResourceCollection
     {
-        
         $videos = Video::query()
-            
             ->where('status', VideoStatus::PUBLISHED)
-            
+            ->with('channel')
+            // Adiciona as contagens de reações
+            ->withCount([
+                'reactions as likes_count' => fn ($q) => $q->where('type', 'like'),
+                'reactions as dislikes_count' => fn ($q) => $q->where('type', 'dislike'),
+            ])
             ->latest('published_at')
-            
             ->paginate(12);
 
-        
         return VideoResource::collection($videos);
     }
 }

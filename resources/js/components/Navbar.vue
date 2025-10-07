@@ -15,13 +15,15 @@
 </template>
 
 <script setup>
-import { useAuthStore } from '@/stores/auth.js'; // Usando alias '@'
+import { useAuthStore } from '@/stores/auth.js';
+import { useRouter } from 'vue-router';
 
 const auth = useAuthStore();
+const router = useRouter();
 
-function handleLogout() {
-  // A lógica de logout virá aqui
-  alert('Lógica de logout a ser implementada!');
+async function handleLogout() {
+  await auth.logout();
+  router.push('/login'); 
 }
 </script>
 

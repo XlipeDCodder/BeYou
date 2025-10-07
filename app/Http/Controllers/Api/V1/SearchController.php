@@ -24,6 +24,10 @@ class SearchController extends Controller
         $videos = Video::query()
             
             ->with('channel')
+            ->withCount([ // <-- ADICIONE ESTE BLOCO
+                'reactions as likes_count' => fn ($q) => $q->where('type', 'like'),
+                'reactions as dislikes_count' => fn ($q) => $q->where('type', 'dislike'),
+            ])
             
             ->where('status', VideoStatus::PUBLISHED)
             

@@ -1,21 +1,50 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
+import axios from 'axios';
 
 export const useAuthStore = defineStore('auth', () => {
-  // State
-  const user = ref(null);
+    const user = ref(JSON.parse(localStorage.getItem('user')));
+    const token = ref(localStorage.getItem('token'));
 
-  // Getters
-  const isAuthenticated = computed(() => !!user.value);
+    axios.defaults.headers.common['Authorization'] = token.value ? `Bearer ${token.value}` : '';
 
-  // Actions
-  function setUser(newUser) {
-    user.value = newUser;
-  }
+    const isAuthenticated = computed(() => !!user.value);
 
-  // Vamos adicionar as ações de login, logout e fetchUser a seguir
-  // async function login(credentials) { ... }
-  // async function logout() { ... }
+    async function login(credentials) {
+        const response = await axios.post('/api/auth/login', credentials);
+        const accessToken = response.data.access_token;
 
-  return { user, isAuthenticated, setUser };
+        token.value = accessToken;
+        localStorage.setItem('token', accessToken);
+        axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+
+        await fetchUser();
+    }
+
+    async function fetchUser() {
+        try {
+            const response = await axios.get('/api/auth/me');
+            user.value = response.data;
+            localStorage.setItem('user', JSON.stringify(response.data));
+        } catch (error) {
+            // Limpa o estado se o token for inválido
+            user.value = null;
+            localStorage.removeItem('user');
+            token.value = null;
+            localStorage.removeItem('token');
+            axios.defaults.headers.common['Authorization'] = '';
+            throw error; // Propaga o erro para o componente de login
+        }
+    }
+
+    async function logout() {
+        await axios.post('/api/auth/logout');
+        user.value = null;
+        localStorage.removeItem('user');
+        token.value = null;
+        localStorage.removeItem('token');
+        axios.defaults.headers.common['Authorization'] = '';
+    }
+
+    return { token, user, isAuthenticated, login, logout, fetchUser };
 });
