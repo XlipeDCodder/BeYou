@@ -58,4 +58,9 @@ class Channel extends Model
     {
         return 'slug';
     }
+
+    public function subscribers(): HasMany
+    {
+        return $this->hasMany(\Beyou\Subscription\Domain\Model\Subscription::class);
+    }
 }

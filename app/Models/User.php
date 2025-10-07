@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -31,5 +32,15 @@ class User extends Authenticatable
     public function channel(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(\Beyou\Catalog\Domain\Model\Channel::class);
+    }
+    
+    public function videoReactions(): HasMany
+    {
+        return $this->hasMany(\Beyou\Engagement\Domain\Model\VideoReaction::class);
+    }
+
+    public function subscriptions(): HasMany
+    {
+        return $this->hasMany(\Beyou\Subscription\Domain\Model\Subscription::class);
     }
 }
