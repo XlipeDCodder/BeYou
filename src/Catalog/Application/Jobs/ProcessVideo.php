@@ -90,6 +90,7 @@ class ProcessVideo implements ShouldQueue
                 'thumbnail_path' => $thumbnailRelativePath,
                 'stream_file_path' => $streamRelativePath,
                 'duration_in_seconds' => $duration,
+                'published_at' => now(),
             ]);
 
             
