@@ -80,5 +80,8 @@ class Video extends Model
         return $this->hasMany(\Beyou\Engagement\Domain\Model\VideoReaction::class);
     }
 
-
+    public function comments(): HasMany
+    {
+        return $this->hasMany(\Beyou\Engagement\Domain\Model\Comment::class);
+    }
 }

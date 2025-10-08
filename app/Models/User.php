@@ -54,4 +54,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return [];
     }
+
+    public function comments(): HasMany
+    {
+        return $this->hasMany(\Beyou\Engagement\Domain\Model\Comment::class);
+    }
 }

@@ -3,10 +3,11 @@
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\CancelSubscriptionController;
 use App\Http\Controllers\Api\V1\CreateChannelController;
-use App\Http\Controllers\Api\V1\GetUserVideoReactionController; // <-- A LINHA QUE FALTAVA
+use App\Http\Controllers\Api\V1\GetUserVideoReactionController; 
 use App\Http\Controllers\Api\V1\ListVideoController;
 use App\Http\Controllers\Api\V1\ReactToVideoController;
 use App\Http\Controllers\Api\V1\RemoveVideoReactionController;
+use App\Http\Controllers\Api\V1\ListCommentsController;
 use App\Http\Controllers\Api\V1\SearchController;
 use App\Http\Controllers\Api\V1\ShowChannelController;
 use App\Http\Controllers\Api\V1\ShowVideoController;
@@ -30,6 +31,7 @@ Route::get('/search', SearchController::class);
 Route::get('/channels/{channel}', ShowChannelController::class);
 Route::get('/videos', ListVideoController::class);
 Route::get('/videos/{video:uuid}', ShowVideoController::class);
+Route::get('/videos/{video:uuid}/comments', ListCommentsController::class);
 
 // --- ROTAS PROTEGIDAS (PRECISAM DE TOKEN JWT) ---
 Route::middleware('auth:api')->group(function () {
