@@ -29,7 +29,9 @@ class AuthController extends Controller
 
     public function me()
     {
-        return response()->json(Auth::guard('api')->user());
+        
+        $user = Auth::guard('api')->user()->load('channel');
+        return response()->json($user);
     }
 
     public function logout()

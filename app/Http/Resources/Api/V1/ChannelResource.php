@@ -28,7 +28,7 @@ class ChannelResource extends JsonResource
             'verified' => $this->verified_at !== null,
 
             
-            'videos' => VideoResource::collection($this->whenLoaded('videos')),
+            'videos' => VideoResource::collection($this->when($this->relationLoaded('videos'), $this->videos)),
         ];
     }
 }

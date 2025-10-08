@@ -50,10 +50,10 @@ export const useAuthStore = defineStore('auth', () => {
   async function fetchUser() {
     try {
       const response = await axios.get('/api/auth/me');
-      user.value = response.data;
-      localStorage.setItem('user', JSON.stringify(response.data));
+      const updatedUser = response.data;
+      user.value = updatedUser; // Atribui o objeto inteiro
+      localStorage.setItem('user', JSON.stringify(updatedUser));
     } catch (error) {
-      
       forceLogout();
       throw error;
     }
@@ -74,5 +74,18 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  return { token, user, isAuthenticated, login, logout, fetchUser, forceLogout };
+  async function register(credentials) {
+  
+  const response = await axios.post('/api/auth/register', credentials);
+  const accessToken = response.data.access_token;
+
+  
+  token.value = accessToken;
+  localStorage.setItem('token', accessToken);
+  axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+
+  await fetchUser();
+  }
+
+  return { token, user, isAuthenticated, login, logout, fetchUser, forceLogout, register };
 });

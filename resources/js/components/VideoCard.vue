@@ -3,7 +3,9 @@
     <img :src="video.thumbnail_url" alt="Thumbnail do vídeo" class="thumbnail">
     <div class="details">
       <h3 class="title">{{ video.title }}</h3>
-      <p class="channel-name">{{ video.channel.name }}</p>
+      <router-link :to="{ name: 'channels.show', params: { slug: video.channel.slug } }" class="channel-link">
+        <p class="channel-name">{{ video.channel.name }}</p>
+      </router-link>
       </div>
   </div>
 </template>
@@ -45,5 +47,8 @@ defineProps({
   font-size: 0.85rem;
   color: #aaa;
   margin: 0;
+}
+.channel-link { 
+  text-decoration: none; 
 }
 </style>

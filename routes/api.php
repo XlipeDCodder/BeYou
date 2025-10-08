@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\V1\ShowChannelController;
 use App\Http\Controllers\Api\V1\ShowVideoController;
 use App\Http\Controllers\Api\V1\StoreVideoController;
 use App\Http\Controllers\Api\V1\SubscribeToChannelController;
+use App\Http\Controllers\Auth\RegisteredUserController;
 use Beyou\Catalog\Domain\Model\Video;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -34,6 +35,7 @@ Route::get('/channels/{channel}', ShowChannelController::class);
 Route::get('/videos', ListVideoController::class);
 Route::get('/videos/{video:uuid}', ShowVideoController::class);
 Route::get('/videos/{video:uuid}/comments', ListCommentsController::class);
+Route::post('/auth/register', [RegisteredUserController::class, 'store']);
 
 // --- ROTAS PROTEGIDAS (PRECISAM DE TOKEN JWT) ---
 Route::middleware('auth:api')->group(function () {

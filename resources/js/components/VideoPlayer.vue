@@ -10,7 +10,9 @@
 
         <div class="actions-bar">
           <div class="channel-info">
+            <router-link :to="{ name: 'channels.show', params: { slug: video.channel.slug } }" class="channel-link">
             <p>Canal: {{ video.channel.name }}</p>
+            </router-link>
             <p class="video-description">{{ video.description }}</p>
           </div>
           <div class="reactions">
@@ -176,5 +178,12 @@ onMounted(async () => {
 /* Futuramente, a lista de vídeos sugeridos pode ir aqui */
 .sidebar {
     width: 400px;
+}
+
+.channel-link { 
+  text-decoration: none; color: #ccc; 
+}
+.channel-link:hover { 
+  text-decoration: underline; 
 }
 </style>

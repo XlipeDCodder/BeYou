@@ -3,7 +3,7 @@
     <router-link to="/" class="brand">Beyou</router-link>
     <div class="links">
       <template v-if="auth.isAuthenticated">
-        <span class="welcome-message">Bem-vindo, {{ auth.user.name }}</span>
+        <router-link to="/creator/dashboard" class="nav-link">Meu Estúdio</router-link> <span class="welcome-message">Bem-vindo, {{ auth.user.name }}</span>
         <button @click="handleLogout" class="nav-button">Logout</button>
       </template>
       <template v-else>
