@@ -22,7 +22,7 @@
             </button>
           </div>
         </div>
-        
+        <CommentSection :video-id="video.id" />
       </div>
     </div>
   </div>
@@ -33,6 +33,7 @@ import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth.js';
 import axios from 'axios';
+import CommentSection from './CommentSection.vue';
 
 const route = useRoute();
 const router = useRouter();

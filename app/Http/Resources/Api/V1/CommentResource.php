@@ -17,11 +17,11 @@ class CommentResource extends JsonResource
         return [
             'id' => $this->id,
             'body' => $this->body,
-            'created_at' => $this->created_at->diffForHumans(), // Formata a data (ex: "há 2 minutos")
+            'created_at' => $this->created_at->diffForHumans(), 
             'author' => [
                 'name' => $this->user->name,
             ],
-            
+            'can_delete' => ($user = auth('api')->user()) && $user->can('delete', $this->resource),
         ];
     }
 }

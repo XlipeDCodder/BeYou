@@ -10,18 +10,21 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ListCommentsController extends Controller
 {
-    public function __invoke(Request $request, Video $video): AnonymousResourceCollection
-    {
-        $comments = $video->comments()
-            
-            ->with('user')
-            
-            ->whereNull('parent_id')
-           
-            ->latest()
-            
-            ->paginate(10);
+public function __invoke(Request $request, Video $video): AnonymousResourceCollection
+{
+    $comments = $video->comments()
+        ->with('user')
+        ->whereNull('parent_id')
+        ->latest()
+        ->paginate(10);
 
-        return CommentResource::collection($comments);
-    }
+    
+    $resourceCollection = CommentResource::collection($comments);
+
+    
+    $resourceCollection->response()->header('Cache-Control', 'no-cache, private');
+
+    
+    return $resourceCollection;
+}
 }

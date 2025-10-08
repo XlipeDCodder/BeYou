@@ -7,7 +7,9 @@ use App\Http\Controllers\Api\V1\GetUserVideoReactionController;
 use App\Http\Controllers\Api\V1\ListVideoController;
 use App\Http\Controllers\Api\V1\ReactToVideoController;
 use App\Http\Controllers\Api\V1\RemoveVideoReactionController;
+use App\Http\Controllers\Api\V1\StoreCommentController;
 use App\Http\Controllers\Api\V1\ListCommentsController;
+use App\Http\Controllers\Api\V1\DestroyCommentController;
 use App\Http\Controllers\Api\V1\SearchController;
 use App\Http\Controllers\Api\V1\ShowChannelController;
 use App\Http\Controllers\Api\V1\ShowVideoController;
@@ -42,6 +44,8 @@ Route::middleware('auth:api')->group(function () {
     // Rotas de Canais e Vídeos
     Route::post('/channels', CreateChannelController::class);
     Route::post('/videos', StoreVideoController::class);
+    Route::post('/videos/{video:uuid}/comments', StoreCommentController::class);
+    Route::delete('/comments/{comment}', DestroyCommentController::class);
 
     // Rotas de Reação
     Route::get('/videos/{video:uuid}/reaction', GetUserVideoReactionController::class);
