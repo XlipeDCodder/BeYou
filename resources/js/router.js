@@ -11,7 +11,7 @@ import CreatorDashboard from '@/components/pages/CreatorDashboard.vue';
 import SearchPage from '@/components/pages/SearchPage.vue';
 
 const routes = [
-  // --- Rotas Públicas ---
+  // --- Rotas Públicas para acessar o sistema ---
   {
     path: '/',
     name: 'home',
