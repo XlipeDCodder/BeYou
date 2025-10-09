@@ -135,10 +135,11 @@ onMounted(async () => {
 .actions-bar {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start; /* <-- Mude aqui */
+  align-items: flex-start;
   margin-top: 10px;
   border-bottom: 1px solid #3f3f3f;
   padding-bottom: 15px;
+  gap: 20px; /* Adiciona um espaço entre a info e os botões */
 }
 
 .channel-info p {
@@ -146,11 +147,16 @@ onMounted(async () => {
   color: #aaa; /* Cor mais clara para o nome do canal */
 }
 
+.reactions {
+  flex-shrink: 0; /* Impede que o container dos botões encolha */
+  display: flex; /* Garante que os botões dentro dele ficam em linha */
+}
+
 .reactions button {
   background: #272727;
   color: white;
   border: none;
-  padding: 10px 18px; /* Aumenta o padding */
+  padding: 10px 18px;
   border-radius: 20px;
   cursor: pointer;
   margin-left: 10px;

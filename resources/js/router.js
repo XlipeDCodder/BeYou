@@ -8,6 +8,7 @@ import Login from '@/components/pages/Login.vue';
 import Register from '@/components/pages/Register.vue';
 import ChannelPage from '@/components/pages/ChannelPage.vue';
 import CreatorDashboard from '@/components/pages/CreatorDashboard.vue';
+import SearchPage from '@/components/pages/SearchPage.vue';
 
 const routes = [
   // --- Rotas Públicas ---
@@ -51,6 +52,8 @@ const routes = [
       }
     },
   },
+
+  { path: '/search', name: 'search', component: SearchPage },
 ];
 
 const router = createRouter({
