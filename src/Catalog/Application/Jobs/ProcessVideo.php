@@ -79,7 +79,7 @@ class ProcessVideo implements ShouldQueue
             
             Log::info("Iniciando transcodificação...");
             $format = new X264('aac', 'libx264');
-            $format->setAdditionalParameters(['-crf', '18', '-preset', 'slow']);
+            $format->setAdditionalParameters(['-movflags', '+faststart','-crf', '18', '-preset', 'slow']);
 
             $videoFile->save($format, $streamFullPath);
             Log::info("Transcodificação concluída", ['path' => $streamFullPath]);
