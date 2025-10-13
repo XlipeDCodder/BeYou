@@ -9,23 +9,21 @@ use Illuminate\Http\Request;
 
 class StoreCommentController extends Controller
 {
-    public function __invoke(Request $request, Video $video)
-    {
-        
-        $validated = $request->validate([
-            'body' => ['required', 'string', 'max:2500'],
-        ]);
+public function __invoke(Request $request, Video $video)
+{
+    $validated = $request->validate([
+        'body' => ['required', 'string', 'max:2500'],
+        'parent_id' => ['nullable', 'exists:comments,id'],
+    ]);
 
-        
-        $comment = $video->comments()->create([
-            'body' => $validated['body'],
-            'user_id' => $request->user()->id,
-        ]);
+    $comment = $video->comments()->create([
+        'body' => $validated['body'],
+        'user_id' => $request->user()->id,
+        'parent_id' => $validated['parent_id'] ?? null, 
+    ]);
 
-        
-        $comment->load('user');
+    $comment->load('user');
 
-        
-        return new CommentResource($comment);
-    }
+    return new CommentResource($comment);
+}
 }

@@ -21,6 +21,7 @@ class CommentResource extends JsonResource
             'author' => [
                 'name' => $this->user->name,
             ],
+            'replies_count' => $this->whenCounted('replies'),
             'can_delete' => ($user = auth('api')->user()) && $user->can('delete', $this->resource),
         ];
     }

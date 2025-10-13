@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\V1\ReactToVideoController;
 use App\Http\Controllers\Api\V1\RemoveVideoReactionController;
 use App\Http\Controllers\Api\V1\StoreCommentController;
 use App\Http\Controllers\Api\V1\ListCommentsController;
+use App\Http\Controllers\Api\V1\ListCommentRepliesController;
 use App\Http\Controllers\Api\V1\DestroyCommentController;
 use App\Http\Controllers\Api\V1\SearchController;
 use App\Http\Controllers\Api\V1\ShowChannelController;
@@ -35,6 +36,7 @@ Route::get('/channels/{channel}', ShowChannelController::class);
 Route::get('/videos', ListVideoController::class);
 Route::get('/videos/{video:uuid}', ShowVideoController::class);
 Route::get('/videos/{video:uuid}/comments', ListCommentsController::class);
+Route::get('/comments/{comment}/replies', ListCommentRepliesController::class);
 Route::post('/auth/register', [RegisteredUserController::class, 'store']);
 
 // --- ROTAS PROTEGIDAS (PRECISAM DE TOKEN JWT) ---

@@ -30,7 +30,7 @@
         v-for="comment in comments"
         :key="comment.id"
         :comment="comment"
-        @comment-deleted="handleDelete"
+        :video-id="props.videoId" @comment-deleted="handleDelete"
       />
       <p v-if="comments.length === 0" class="no-comments-message">Nenhum comentário ainda. Seja o primeiro a comentar!</p>
     </div>

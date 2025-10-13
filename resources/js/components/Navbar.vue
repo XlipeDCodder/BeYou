@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar">
     <div class="navbar-left">
-      <router-link to="/" class="brand">Beyou</router-link>
+      <router-link to="/" class="brand">BeYou</router-link>
     </div>
 
     <div class="navbar-center">

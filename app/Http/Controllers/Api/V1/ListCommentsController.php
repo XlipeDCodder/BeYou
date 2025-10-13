@@ -14,6 +14,7 @@ public function __invoke(Request $request, Video $video): AnonymousResourceColle
 {
     $comments = $video->comments()
         ->with('user')
+        ->withCount('replies')
         ->whereNull('parent_id')
         ->latest()
         ->paginate(10);
