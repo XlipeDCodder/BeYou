@@ -42,7 +42,7 @@
             </button>
           </div>
         </div>
-        <CommentSection :video-id="video.id" />
+        <CommentSection v-if="video" :video-id="video.id" />
       </div>
     </div>
   </div>
@@ -55,6 +55,7 @@ import { useAuthStore } from '@/stores/auth.js';
 import axios from 'axios';
 import CommentSection from './CommentSection.vue';
 
+// --- Estado do Componente ---
 const route = useRoute();
 const router = useRouter();
 const auth = useAuthStore();
@@ -62,57 +63,66 @@ const auth = useAuthStore();
 const video = ref(null);
 const loading = ref(true);
 const error = ref(false);
-
-
-const videoPlayer = ref(null);
-
-function saveVolume() {
-  if (videoPlayer.value) {
-    localStorage.setItem('video_player_volume', videoPlayer.value.volume);
-    localStorage.setItem('video_player_muted', videoPlayer.value.muted);
-  }
-}
-
-function applySavedVolume() {
-  const savedVol = localStorage.getItem('video_player_volume');
-  const savedMute = localStorage.getItem('video_player_muted');
-  if (videoPlayer.value) {
-    if (savedVol !== null) videoPlayer.value.volume = parseFloat(savedVol);
-    if (savedMute !== null) videoPlayer.value.muted = savedMute === 'true';
-  }
-}
-
-onMounted(() => {
-  const savedVol = localStorage.getItem('video_player_volume');
-  const savedMute = localStorage.getItem('video_player_muted');
-  if (videoPlayer.value) {
-    if (savedVol !== null) videoPlayer.value.volume = parseFloat(savedVol);
-    if (savedMute !== null) videoPlayer.value.muted = savedMute === 'true';
-  }
-});
-
-
 const stats = ref({ likes_count: 0, dislikes_count: 0 });
 const userReaction = ref(null);
 
+// Referência para o elemento <video> no template
+const videoPlayer = ref(null);
+
+// --- Lógica de Volume Persistente ---
+
+/**
+ * Guarda o volume e o estado 'muted' atuais no localStorage.
+ * Chamado pelo evento @volumechange do player.
+ */
+function saveVolume() {
+  if (!videoPlayer.value) return;
+  localStorage.setItem('video_player_volume', videoPlayer.value.volume);
+  localStorage.setItem('video_player_muted', videoPlayer.value.muted);
+}
+
+/**
+ * Aplica o volume e o estado 'muted' guardados ao player de vídeo.
+ * Chamado pelo evento @loadedmetadata, que garante que o vídeo está pronto.
+ */
+function applySavedVolume() {
+  if (!videoPlayer.value) return;
+  const savedVolume = localStorage.getItem('video_player_volume');
+  const savedMuted = localStorage.getItem('video_player_muted');
+
+  if (savedVolume !== null) {
+    videoPlayer.value.volume = parseFloat(savedVolume);
+  }
+  if (savedMuted !== null) {
+    videoPlayer.value.muted = savedMuted === 'true';
+  }
+}
+
+// --- Lógica de Reações (Likes/Dislikes) ---
 async function handleReaction(newReactionType) {
   if (!auth.isAuthenticated) return router.push('/login');
 
   const currentReaction = userReaction.value;
   const videoId = video.value.id;
 
+  // Lógica de atualização otimista da UI
   if (currentReaction === newReactionType) {
+    // Clicou no mesmo botão: remover reação
     userReaction.value = null;
     stats.value[`${newReactionType}s_count`]--;
     await axios.delete(`/api/videos/${videoId}/reaction`);
   } else {
-    if (currentReaction) stats.value[`${currentReaction}s_count`]--;
+    // Clicou num botão diferente ou não tinha reagido
+    if (currentReaction) {
+      stats.value[`${currentReaction}s_count`]--;
+    }
     userReaction.value = newReactionType;
     stats.value[`${newReactionType}s_count`]++;
     await axios.post(`/api/videos/${videoId}/${newReactionType}`);
   }
 }
 
+// --- Lógica Principal (Lifecycle Hook) ---
 onMounted(async () => {
   const videoId = route.params.id;
   loading.value = true;
@@ -135,7 +145,6 @@ onMounted(async () => {
   }
 });
 </script>
-
 
 <style scoped>
 .video-page-container {
@@ -222,10 +231,10 @@ onMounted(async () => {
     width: 400px;
 }
 
-.channel-link { 
-  text-decoration: none; color: #ccc; 
+.channel-link {
+  text-decoration: none; color: #ccc;
 }
-.channel-link:hover { 
-  text-decoration: underline; 
+.channel-link:hover {
+  text-decoration: underline;
 }
 </style>
