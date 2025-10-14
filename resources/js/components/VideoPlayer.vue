@@ -5,21 +5,39 @@
 
     <div v-if="video" class="video-layout">
       <div class="video-player-wrapper">
-        <video :src="video.stream_url" controls autoplay class="video-player"></video>
+        <video
+          ref="videoPlayer"
+          :src="video.stream_url"
+          controls
+          autoplay
+          class="video-player"
+          @volumechange="saveVolume"
+          @loadedmetadata="applySavedVolume"
+        ></video>
+
         <h1 class="video-title">{{ video.title }}</h1>
 
         <div class="actions-bar">
           <div class="channel-info">
-            <router-link :to="{ name: 'channels.show', params: { slug: video.channel.slug } }" class="channel-link">
-            <p>Canal: {{ video.channel.name }}</p>
+            <router-link
+              :to="{ name: 'channels.show', params: { slug: video.channel.slug } }"
+              class="channel-link"
+            >
+              <p>Canal: {{ video.channel.name }}</p>
             </router-link>
             <p class="video-description">{{ video.description }}</p>
           </div>
           <div class="reactions">
-            <button @click="handleReaction('like')" :class="{ active: userReaction === 'like' }">
+            <button
+              @click="handleReaction('like')"
+              :class="{ active: userReaction === 'like' }"
+            >
               Gostei ({{ stats.likes_count }})
             </button>
-            <button @click="handleReaction('dislike')" :class="{ active: userReaction === 'dislike' }">
+            <button
+              @click="handleReaction('dislike')"
+              :class="{ active: userReaction === 'dislike' }"
+            >
               Não Gostei ({{ stats.dislikes_count }})
             </button>
           </div>
@@ -45,30 +63,50 @@ const video = ref(null);
 const loading = ref(true);
 const error = ref(false);
 
-// Estado local para as reações
+
+const videoPlayer = ref(null);
+
+function saveVolume() {
+  if (videoPlayer.value) {
+    localStorage.setItem('video_player_volume', videoPlayer.value.volume);
+    localStorage.setItem('video_player_muted', videoPlayer.value.muted);
+  }
+}
+
+function applySavedVolume() {
+  const savedVol = localStorage.getItem('video_player_volume');
+  const savedMute = localStorage.getItem('video_player_muted');
+  if (videoPlayer.value) {
+    if (savedVol !== null) videoPlayer.value.volume = parseFloat(savedVol);
+    if (savedMute !== null) videoPlayer.value.muted = savedMute === 'true';
+  }
+}
+
+onMounted(() => {
+  const savedVol = localStorage.getItem('video_player_volume');
+  const savedMute = localStorage.getItem('video_player_muted');
+  if (videoPlayer.value) {
+    if (savedVol !== null) videoPlayer.value.volume = parseFloat(savedVol);
+    if (savedMute !== null) videoPlayer.value.muted = savedMute === 'true';
+  }
+});
+
+
 const stats = ref({ likes_count: 0, dislikes_count: 0 });
 const userReaction = ref(null);
 
 async function handleReaction(newReactionType) {
-  if (!auth.isAuthenticated) {
-    // Se o utilizador não estiver logado, redireciona para a página de login
-    return router.push('/login');
-  }
+  if (!auth.isAuthenticated) return router.push('/login');
 
   const currentReaction = userReaction.value;
   const videoId = video.value.id;
 
-  // Lógica de atualização otimista da UI
   if (currentReaction === newReactionType) {
-    // Clicou no mesmo botão: remover reação
     userReaction.value = null;
     stats.value[`${newReactionType}s_count`]--;
     await axios.delete(`/api/videos/${videoId}/reaction`);
   } else {
-    // Clicou num botão diferente ou não tinha reagido
-    if (currentReaction) {
-      stats.value[`${currentReaction}s_count`]--;
-    }
+    if (currentReaction) stats.value[`${currentReaction}s_count`]--;
     userReaction.value = newReactionType;
     stats.value[`${newReactionType}s_count`]++;
     await axios.post(`/api/videos/${videoId}/${newReactionType}`);
@@ -81,17 +119,14 @@ onMounted(async () => {
   error.value = false;
 
   try {
-    // 1. Primeiro pedido: obter os dados PÚBLICOS do vídeo
     const videoResponse = await axios.get(`/api/videos/${videoId}`);
     video.value = videoResponse.data.data;
     stats.value = videoResponse.data.data.stats;
 
-    // 2. SE o utilizador estiver logado, obter a sua reação pessoal
     if (auth.isAuthenticated) {
       const reactionResponse = await axios.get(`/api/videos/${videoId}/reaction`);
       userReaction.value = reactionResponse.data.reaction;
     }
-
   } catch (e) {
     console.error('Erro ao buscar dados do vídeo:', e);
     error.value = true;
@@ -100,6 +135,7 @@ onMounted(async () => {
   }
 });
 </script>
+
 
 <style scoped>
 .video-page-container {
